@@ -106,6 +106,41 @@
             margin-bottom: 10px;
             transition: all 0.3s ease;
         }
+        
+        .controls-help {
+            margin-top: 20px;
+            font-size: 13px;
+            text-align: left;
+            max-width: 350px;
+            opacity: 0.8;
+        }
+        
+        .controls-help h3 {
+            color: var(--accent-color);
+            margin-bottom: 8px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        
+        .control-section {
+            margin-bottom: 6px;
+        }
+        
+        .control-title {
+            color: var(--primary-color);
+            font-weight: bold;
+            font-size: 12px;
+            margin-bottom: 2px;
+            transition: all 0.3s ease;
+        }
+        
+        .control-section div:last-child {
+            color: var(--primary-color);
+            opacity: 0.7;
+            font-size: 12px;
+            line-height: 1.3;
+            transition: all 0.3s ease;
+        }
     </style>
 </head>
 <body>
@@ -130,13 +165,25 @@
         <div class="win-message" id="win-message" aria-live="polite"></div>
         
         <div class="paytable">
-            <h3>PAYTABLE</h3>
-            <div>3× SEVEN: 50 credits</div>
-            <div>3× BELL: 40 credits</div>
-            <div>3× STAR: 30 credits</div>
-            <div>3× DIAMOND: 20 credits</div>
-            <div>3× CHERRY: 10 credits</div>
-            <div>3× LEMON: 5 credits</div>
+            <h3>PAYTABLE (BET: <span id="paytable-bet">1</span>)</h3>
+            <div>3× SEVEN: <span id="payout-seven">50</span> credits</div>
+            <div>3× BELL: <span id="payout-bell">40</span> credits</div>
+            <div>3× STAR: <span id="payout-star">30</span> credits</div>
+            <div>3× DIAMOND: <span id="payout-diamond">20</span> credits</div>
+            <div>3× CHERRY: <span id="payout-cherry">10</span> credits</div>
+            <div>3× LEMON: <span id="payout-lemon">5</span> credits</div>
+        </div>
+        
+        <div class="controls-help">
+            <h3>CONTROLS</h3>
+            <div class="control-section">
+                <div class="control-title">🖱️ MOUSE</div>
+                <div>Click buttons to play</div>
+            </div>
+            <div class="control-section">
+                <div class="control-title">⌨️ KEYBOARD</div>
+                <div>SPACE = Spin • ←→ = Bet • T = Theme • M = Mute</div>
+            </div>
         </div>
     </div>
 
@@ -640,6 +687,22 @@
                 const betEnabled = !this.spinning;
                 document.getElementById('bet-down').disabled = !betEnabled;
                 document.getElementById('bet-up').disabled = !betEnabled;
+                
+                // Update paytable with current bet multiplier
+                this.updatePaytable();
+            }
+            
+            updatePaytable() {
+                document.getElementById('paytable-bet').textContent = this.bet;
+                
+                // Update each payout value based on current bet
+                this.symbols.forEach(symbol => {
+                    const elementId = `payout-${symbol.name.toLowerCase()}`;
+                    const element = document.getElementById(elementId);
+                    if (element) {
+                        element.textContent = symbol.payout * this.bet;
+                    }
+                });
             }
             
             playSpinSound() {
