@@ -709,22 +709,80 @@
                 if (this.isMuted || !this.audioContext) return;
                 
                 try {
-                    const oscillator = this.audioContext.createOscillator();
-                    const gainNode = this.audioContext.createGain();
+                    // Create that classic casino jingle - "glittery musical confetti"!
+                    const duration = 4.2;
+                    const startTime = this.audioContext.currentTime;
                     
-                    oscillator.connect(gainNode);
-                    gainNode.connect(this.audioContext.destination);
+                    // Base frequencies for our ascending cascade
+                    const baseFreqs = [523, 659, 784, 880, 1047, 1319]; // C5, E5, G5, A5, C6, E6
+                    const noteInterval = 0.08; // Fast staccato notes
+                    const totalNotes = Math.floor(duration / noteInterval);
                     
-                    oscillator.type = 'sawtooth';
-                    oscillator.frequency.setValueAtTime(80, this.audioContext.currentTime);
-                    oscillator.frequency.exponentialRampToValueAtTime(60, this.audioContext.currentTime + 1.5);
+                    // Create the sparkling cascade of digital bells
+                    for (let i = 0; i < totalNotes; i++) {
+                        const noteTime = startTime + (i * noteInterval);
+                        const progress = i / totalNotes;
+                        
+                        // Create each "bell chime"
+                        const osc = this.audioContext.createOscillator();
+                        const gain = this.audioContext.createGain();
+                        const filter = this.audioContext.createBiquadFilter();
+                        
+                        osc.connect(filter);
+                        filter.connect(gain);
+                        gain.connect(this.audioContext.destination);
+                        
+                        // Bright, crystalline tone
+                        osc.type = 'sine';
+                        
+                        // Ascending pattern with some randomness for sparkle
+                        const freqIndex = Math.floor(progress * baseFreqs.length) % baseFreqs.length;
+                        const baseFreq = baseFreqs[freqIndex];
+                        const sparkle = 1 + (Math.random() * 0.1 - 0.05); // ±5% sparkle
+                        osc.frequency.setValueAtTime(baseFreq * sparkle, noteTime);
+                        
+                        // High-pass filter for crystalline brightness
+                        filter.type = 'highpass';
+                        filter.frequency.setValueAtTime(400, noteTime);
+                        filter.Q.setValueAtTime(2, noteTime);
+                        
+                        // Quick attack, short decay for staccato effect
+                        const noteLength = noteInterval * 0.6;
+                        const volume = 0.08 + (progress * 0.1); // Builds in intensity - LOUDER!
+                        
+                        gain.gain.setValueAtTime(0, noteTime);
+                        gain.gain.linearRampToValueAtTime(volume, noteTime + 0.005);
+                        gain.gain.exponentialRampToValueAtTime(0.001, noteTime + noteLength);
+                        
+                        osc.start(noteTime);
+                        osc.stop(noteTime + noteLength);
+                    }
                     
-                    gainNode.gain.setValueAtTime(0, this.audioContext.currentTime);
-                    gainNode.gain.linearRampToValueAtTime(0.1, this.audioContext.currentTime + 0.01);
-                    gainNode.gain.exponentialRampToValueAtTime(0.001, this.audioContext.currentTime + 1.5);
+                    // Add harmonic shimmer layer
+                    const shimmerOsc = this.audioContext.createOscillator();
+                    const shimmerGain = this.audioContext.createGain();
+                    const shimmerFilter = this.audioContext.createBiquadFilter();
                     
-                    oscillator.start(this.audioContext.currentTime);
-                    oscillator.stop(this.audioContext.currentTime + 1.5);
+                    shimmerOsc.connect(shimmerFilter);
+                    shimmerFilter.connect(shimmerGain);
+                    shimmerGain.connect(this.audioContext.destination);
+                    
+                    shimmerOsc.type = 'triangle';
+                    shimmerOsc.frequency.setValueAtTime(1047, startTime); // High C
+                    shimmerOsc.frequency.exponentialRampToValueAtTime(2093, startTime + duration); // Octave climb
+                    
+                    shimmerFilter.type = 'bandpass';
+                    shimmerFilter.frequency.setValueAtTime(2000, startTime);
+                    shimmerFilter.Q.setValueAtTime(3, startTime);
+                    
+                    shimmerGain.gain.setValueAtTime(0, startTime);
+                    shimmerGain.gain.linearRampToValueAtTime(0.04, startTime + 0.5);
+                    shimmerGain.gain.linearRampToValueAtTime(0.06, startTime + duration - 0.5);
+                    shimmerGain.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
+                    
+                    shimmerOsc.start(startTime);
+                    shimmerOsc.stop(startTime + duration);
+                    
                 } catch (e) {
                     console.warn('Audio generation failed:', e);
                 }
@@ -734,33 +792,94 @@
                 if (this.isMuted || !this.audioContext) return;
                 
                 try {
-                    const oscillator1 = this.audioContext.createOscillator();
-                    const oscillator2 = this.audioContext.createOscillator();
-                    const gainNode = this.audioContext.createGain();
+                    // Create a triumphant win celebration - cascading victory bells! 🎉
+                    const duration = 2.0;
+                    const startTime = this.audioContext.currentTime;
                     
-                    oscillator1.connect(gainNode);
-                    oscillator2.connect(gainNode);
-                    gainNode.connect(this.audioContext.destination);
+                    // PHASE 1: Triumphant fanfare chord (0.0-0.5s)
+                    const fanfareChord = [1047, 1319, 1568, 2093]; // C6, E6, G6, C7 - bright and triumphant!
+                    fanfareChord.forEach((freq, index) => {
+                        const osc = this.audioContext.createOscillator();
+                        const gain = this.audioContext.createGain();
+                        const filter = this.audioContext.createBiquadFilter();
+                        
+                        osc.connect(filter);
+                        filter.connect(gain);
+                        gain.connect(this.audioContext.destination);
+                        
+                        osc.type = 'sine';
+                        osc.frequency.setValueAtTime(freq, startTime);
+                        
+                        filter.type = 'highpass';
+                        filter.frequency.setValueAtTime(400, startTime);
+                        filter.Q.setValueAtTime(2, startTime);
+                        
+                        gain.gain.setValueAtTime(0, startTime);
+                        gain.gain.linearRampToValueAtTime(0.12, startTime + 0.02);
+                        gain.gain.exponentialRampToValueAtTime(0.001, startTime + 0.5);
+                        
+                        osc.start(startTime);
+                        osc.stop(startTime + 0.5);
+                    });
                     
-                    oscillator1.type = 'sine';
-                    oscillator2.type = 'triangle';
+                    // PHASE 2: Cascading victory bells (0.3-1.8s) - like coins falling!
+                    const cascadeFreqs = [2093, 2349, 2637, 2794, 3136, 3520, 3951]; // High sparkling notes
+                    const cascadeCount = 20;
                     
-                    oscillator1.frequency.setValueAtTime(523, this.audioContext.currentTime);
-                    oscillator1.frequency.setValueAtTime(659, this.audioContext.currentTime + 0.2);
-                    oscillator1.frequency.setValueAtTime(784, this.audioContext.currentTime + 0.4);
+                    for (let i = 0; i < cascadeCount; i++) {
+                        const noteTime = startTime + 0.3 + (i * 0.07); // Rapid cascade
+                        const freq = cascadeFreqs[i % cascadeFreqs.length];
+                        const sparkle = 1 + (Math.random() * 0.08 - 0.04); // Sparkle variation
+                        
+                        const osc = this.audioContext.createOscillator();
+                        const gain = this.audioContext.createGain();
+                        const filter = this.audioContext.createBiquadFilter();
+                        
+                        osc.connect(filter);
+                        filter.connect(gain);
+                        gain.connect(this.audioContext.destination);
+                        
+                        osc.type = 'sine';
+                        osc.frequency.setValueAtTime(freq * sparkle, noteTime);
+                        
+                        // Ultra-bright crystalline filter
+                        filter.type = 'highpass';
+                        filter.frequency.setValueAtTime(1000, noteTime);
+                        filter.Q.setValueAtTime(3, noteTime);
+                        
+                        // Quick sparkly attack
+                        const volume = 0.05 + (Math.random() * 0.02); // Slight volume variation
+                        gain.gain.setValueAtTime(0, noteTime);
+                        gain.gain.linearRampToValueAtTime(volume, noteTime + 0.003);
+                        gain.gain.exponentialRampToValueAtTime(0.001, noteTime + 0.12);
+                        
+                        osc.start(noteTime);
+                        osc.stop(noteTime + 0.12);
+                    }
                     
-                    oscillator2.frequency.setValueAtTime(262, this.audioContext.currentTime);
-                    oscillator2.frequency.setValueAtTime(330, this.audioContext.currentTime + 0.2);
-                    oscillator2.frequency.setValueAtTime(392, this.audioContext.currentTime + 0.4);
+                    // PHASE 3: Final triumphant sustain (1.5-2.0s)
+                    const finalOsc = this.audioContext.createOscillator();
+                    const finalGain = this.audioContext.createGain();
+                    const finalFilter = this.audioContext.createBiquadFilter();
                     
-                    gainNode.gain.setValueAtTime(0, this.audioContext.currentTime);
-                    gainNode.gain.linearRampToValueAtTime(0.15, this.audioContext.currentTime + 0.01);
-                    gainNode.gain.exponentialRampToValueAtTime(0.001, this.audioContext.currentTime + 0.8);
+                    finalOsc.connect(finalFilter);
+                    finalFilter.connect(finalGain);
+                    finalGain.connect(this.audioContext.destination);
                     
-                    oscillator1.start(this.audioContext.currentTime);
-                    oscillator2.start(this.audioContext.currentTime);
-                    oscillator1.stop(this.audioContext.currentTime + 0.8);
-                    oscillator2.stop(this.audioContext.currentTime + 0.8);
+                    finalOsc.type = 'triangle';
+                    finalOsc.frequency.setValueAtTime(1047, startTime + 1.5); // Resolves to C6
+                    
+                    finalFilter.type = 'lowpass';
+                    finalFilter.frequency.setValueAtTime(2000, startTime + 1.5);
+                    finalFilter.Q.setValueAtTime(1, startTime + 1.5);
+                    
+                    finalGain.gain.setValueAtTime(0, startTime + 1.5);
+                    finalGain.gain.linearRampToValueAtTime(0.08, startTime + 1.55);
+                    finalGain.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
+                    
+                    finalOsc.start(startTime + 1.5);
+                    finalOsc.stop(startTime + duration);
+                    
                 } catch (e) {
                     console.warn('Win sound generation failed:', e);
                 }

@@ -1,6 +1,6 @@
 # Retro 3-Reel Slot Machine
 
-A retro-styled HTML5/JavaScript slot machine game with authentic physical reel simulation, 9 paylines, and classic arcade aesthetics. Built with pure JavaScript - no build tools required!
+A premium retro-styled HTML5/JavaScript slot machine with authentic physical reel simulation, 9 paylines, 5 visual themes, and professional casino audio. Built with pure JavaScript - no build tools required!
 
 ## Quick Start
 
