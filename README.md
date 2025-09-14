@@ -7,7 +7,8 @@ A retro-styled HTML5/JavaScript slot machine game with authentic physical reel s
 1. **Run the game**: Simply open `index.html` in a modern web browser
 2. **Play**: Click SPIN or press SPACE to play
 3. **Adjust bet**: Use BET +/- buttons or LEFT/RIGHT arrow keys (1-5 credits)
-4. **Mute audio**: Click SOUND button or press M
+4. **Change themes**: Click THEME button or press T to cycle through 5 visual themes
+5. **Mute audio**: Click SOUND button or press M
 
 ## Authentic Slot Machine Experience
 
@@ -15,6 +16,7 @@ A retro-styled HTML5/JavaScript slot machine game with authentic physical reel s
 - **Sequential Stopping**: Left reel stops first, then middle, then right (like real slots)
 - **Smooth Animation**: Symbols scroll naturally with motion blur effects
 - **9 Paylines**: Complete winning combinations across rows, columns, and diagonals
+- **5 Visual Themes**: Cycle through Retro Green, Neon Pink, Cyber Blue, Gold Rush, and Fire Red
 
 ## Game Features
 
@@ -26,15 +28,23 @@ A retro-styled HTML5/JavaScript slot machine game with authentic physical reel s
 
 ### Game Mechanics
 - **3×3 grid** with 9 paylines (rows, columns, diagonals, V-shape)
-- **6 retro symbols**: Cherry 🍒, Lemon 🍋, Bar ▬, Bell 🔔, Star ★, Seven 7
-- **Variable payouts**: SEVEN (50), BELL (40), STAR (30), BAR (20), CHERRY (10), LEMON (5)
+- **6 retro symbols**: Cherry 🍒, Lemon 🍋, Diamond 💎, Bell 🔔, Star ★, Seven 7
+- **Variable payouts**: SEVEN (50), BELL (40), STAR (30), DIAMOND (20), CHERRY (10), LEMON (5)
 - **Betting system**: 1-5 credits per spin with payout multipliers
+
+### Visual Themes
+- **🟢 Retro Green**: Classic terminal/matrix aesthetic (default)
+- **🟣 Neon Pink**: Cyberpunk synthwave vibes
+- **🔵 Cyber Blue**: Futuristic tech interface
+- **🟡 Gold Rush**: Luxurious casino glamour
+- **🔴 Fire Red**: High-energy racing/gaming style
 
 ### Controls & Accessibility
 - **Mouse**: Click buttons for all actions
-- **Keyboard**: SPACE=spin, arrows=bet, M=mute, TAB=navigate
+- **Keyboard**: SPACE=spin, arrows=bet, T=theme, M=mute, TAB=navigate
 - **Audio**: Generated spin/win sounds with mute toggle
 - **Visual feedback**: Winning paylines highlighted with animations
+- **Theme switching**: Smooth animated transitions between 5 color schemes
 
 ## Project Structure
 
