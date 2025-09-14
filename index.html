@@ -5,29 +5,42 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Retro 3-Reel Slot Machine</title>
     <style>
+        :root {
+            --bg-color: #1a1a1a;
+            --container-bg: #2a2a2a;
+            --primary-color: #00ff00;
+            --secondary-color: #004400;
+            --accent-color: #ffff00;
+            --canvas-bg: #000000;
+            --grid-color: #00ff00;
+        }
+        
         body {
             margin: 0;
             padding: 20px;
-            background: #1a1a1a;
-            color: #00ff00;
+            background: var(--bg-color);
+            color: var(--primary-color);
             font-family: "Courier New", monospace;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
+            transition: all 0.3s ease;
         }
         
         #game-container {
             text-align: center;
-            background: #2a2a2a;
+            background: var(--container-bg);
             padding: 20px;
-            border: 2px solid #00ff00;
+            border: 2px solid var(--primary-color);
             border-radius: 8px;
+            transition: all 0.3s ease;
         }
         
         canvas {
-            border: 1px solid #00ff00;
-            background: #000;
+            border: 1px solid var(--primary-color);
+            background: var(--canvas-bg);
+            transition: all 0.3s ease;
         }
         
         .controls {
@@ -39,21 +52,23 @@
         }
         
         button {
-            background: #003300;
-            color: #00ff00;
-            border: 1px solid #00ff00;
+            background: var(--secondary-color);
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
             padding: 10px 20px;
             font-family: inherit;
             cursor: pointer;
             border-radius: 4px;
+            transition: all 0.3s ease;
         }
         
         button:hover {
-            background: #004400;
+            background: var(--primary-color);
+            color: var(--secondary-color);
         }
         
         button:focus {
-            outline: 2px solid #00ff00;
+            outline: 2px solid var(--primary-color);
             outline-offset: 2px;
         }
         
@@ -73,9 +88,10 @@
         
         .win-message {
             margin-top: 10px;
-            color: #ffff00;
+            color: var(--accent-color);
             font-weight: bold;
             min-height: 20px;
+            transition: all 0.3s ease;
         }
         
         .paytable {
@@ -86,8 +102,9 @@
         }
         
         .paytable h3 {
-            color: #ffff00;
+            color: var(--accent-color);
             margin-bottom: 10px;
+            transition: all 0.3s ease;
         }
     </style>
 </head>
@@ -100,6 +117,7 @@
             <button id="bet-down" aria-label="Decrease bet">BET -</button>
             <button id="spin-btn" aria-label="Spin reels">SPIN</button>
             <button id="bet-up" aria-label="Increase bet">BET +</button>
+            <button id="theme-btn" aria-label="Change theme">THEME</button>
             <button id="mute-btn" aria-label="Toggle sound">SOUND</button>
         </div>
         
@@ -168,6 +186,10 @@
                 this.isMuted = false;
                 this.winningLines = [];
                 
+                // Theme system
+                this.currentTheme = 0;
+                this.themes = this.createThemes();
+                
                 // Canvas
                 this.canvas = document.getElementById('game-canvas');
                 this.ctx = this.canvas.getContext('2d');
@@ -186,6 +208,61 @@
                     reel.push(this.symbols[Math.floor(Math.random() * this.symbols.length)]);
                 }
                 return reel;
+            }
+            
+            createThemes() {
+                return [
+                    {
+                        name: 'RETRO GREEN',
+                        background: '#1a1a1a',
+                        containerBg: '#2a2a2a',
+                        primary: '#00ff00',
+                        secondary: '#004400',
+                        accent: '#ffff00',
+                        canvasBg: '#000000',
+                        gridColor: '#00ff00'
+                    },
+                    {
+                        name: 'NEON PINK',
+                        background: '#1a0a1a',
+                        containerBg: '#2a1a2a',
+                        primary: '#ff00ff',
+                        secondary: '#440044',
+                        accent: '#00ffff',
+                        canvasBg: '#000000',
+                        gridColor: '#ff00ff'
+                    },
+                    {
+                        name: 'CYBER BLUE',
+                        background: '#0a0a1a',
+                        containerBg: '#1a1a2a',
+                        primary: '#00aaff',
+                        secondary: '#002244',
+                        accent: '#ffaa00',
+                        canvasBg: '#000011',
+                        gridColor: '#00aaff'
+                    },
+                    {
+                        name: 'GOLD RUSH',
+                        background: '#1a1a0a',
+                        containerBg: '#2a2a1a',
+                        primary: '#ffaa00',
+                        secondary: '#442200',
+                        accent: '#ffffff',
+                        canvasBg: '#110800',
+                        gridColor: '#ffaa00'
+                    },
+                    {
+                        name: 'FIRE RED',
+                        background: '#1a0a0a',
+                        containerBg: '#2a1a1a',
+                        primary: '#ff4400',
+                        secondary: '#440000',
+                        accent: '#ffff00',
+                        canvasBg: '#110000',
+                        gridColor: '#ff4400'
+                    }
+                ];
             }
             
             initAudio() {
@@ -228,6 +305,11 @@
                 
                 document.getElementById('mute-btn').addEventListener('click', () => this.toggleMute());
                 
+                document.getElementById('theme-btn').addEventListener('click', () => {
+                    this.enableAudio();
+                    this.cycleTheme();
+                });
+                
                 // Keyboard controls
                 document.addEventListener('keydown', (e) => {
                     if (e.code === 'Space') {
@@ -243,8 +325,14 @@
                     } else if (e.code === 'KeyM') {
                         e.preventDefault();
                         this.toggleMute();
+                    } else if (e.code === 'KeyT') {
+                        e.preventDefault();
+                        this.cycleTheme();
                     }
                 });
+                
+                // Initialize theme
+                this.applyTheme();
                 
                 // Initial render
                 this.renderReels();
@@ -274,6 +362,34 @@
             toggleMute() {
                 this.isMuted = !this.isMuted;
                 document.getElementById('mute-btn').textContent = this.isMuted ? 'MUTED' : 'SOUND';
+            }
+            
+            cycleTheme() {
+                if (this.spinning) return; // Don't change theme while spinning
+                
+                this.currentTheme = (this.currentTheme + 1) % this.themes.length;
+                this.applyTheme();
+                console.log(`Theme changed to: ${this.themes[this.currentTheme].name}`);
+            }
+            
+            applyTheme() {
+                const theme = this.themes[this.currentTheme];
+                const root = document.documentElement;
+                
+                // Apply CSS custom properties
+                root.style.setProperty('--bg-color', theme.background);
+                root.style.setProperty('--container-bg', theme.containerBg);
+                root.style.setProperty('--primary-color', theme.primary);
+                root.style.setProperty('--secondary-color', theme.secondary);
+                root.style.setProperty('--accent-color', theme.accent);
+                root.style.setProperty('--canvas-bg', theme.canvasBg);
+                root.style.setProperty('--grid-color', theme.gridColor);
+                
+                // Update theme button text
+                document.getElementById('theme-btn').textContent = theme.name;
+                
+                // Re-render with new colors
+                this.renderReels();
             }
             
             spin() {
@@ -404,12 +520,14 @@
             }
             
             renderReels() {
-                // Clear canvas
-                this.ctx.fillStyle = '#000';
+                const theme = this.themes[this.currentTheme];
+                
+                // Clear canvas with theme background
+                this.ctx.fillStyle = theme.canvasBg;
                 this.ctx.fillRect(0, 0, 300, 300);
                 
-                // Draw grid lines
-                this.ctx.strokeStyle = '#00ff00';
+                // Draw grid lines with theme color
+                this.ctx.strokeStyle = theme.gridColor;
                 this.ctx.lineWidth = 2;
                 for (let row = 0; row < 3; row++) {
                     for (let col = 0; col < 3; col++) {
@@ -472,9 +590,10 @@
             }
             
             drawWinningLines() {
+                const theme = this.themes[this.currentTheme];
                 const pulse = Math.sin(Date.now() * 0.01) * 0.3 + 0.7;
                 this.ctx.globalAlpha = pulse;
-                this.ctx.strokeStyle = '#ffff00';
+                this.ctx.strokeStyle = theme.accent;
                 this.ctx.lineWidth = 4;
                 
                 this.winningLines.forEach(win => {
@@ -494,7 +613,7 @@
                     this.ctx.stroke();
                     
                     // Highlight cells
-                    this.ctx.fillStyle = '#ffff00';
+                    this.ctx.fillStyle = theme.accent;
                     this.ctx.globalAlpha = pulse * 0.2;
                     win.indices.forEach(index => {
                         const row = Math.floor(index / 3);
